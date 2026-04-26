@@ -24,6 +24,23 @@ export class InventoryService {
     });
   }
 
+  async getExpiringSoon() {
+    const thirtyDaysFromNow = new Date();
+    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+
+    return this.prisma.batch.findMany({
+      where: {
+        expirationDate: {
+          lte: thirtyDaysFromNow,
+          gt: new Date(),
+        },
+        quantity: { gt: 0 },
+      },
+      include: { product: true },
+      orderBy: { expirationDate: 'asc' },
+    });
+  }
+
   async findOne(id: string) {
     return this.prisma.batch.findUnique({
       where: { id },
