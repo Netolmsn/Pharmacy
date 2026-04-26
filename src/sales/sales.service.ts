@@ -79,4 +79,33 @@ export class SalesService {
       },
     });
   }
+
+  async getDailyReport() {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const stats = await this.prisma.sale.aggregate({
+      where: {
+        createdAt: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+      _sum: {
+        totalAmount: true,
+      },
+      _count: {
+        id: true,
+      },
+    });
+
+    return {
+      date: startOfDay.toLocaleDateString(),
+      totalSales: stats._count.id,
+      totalRevenue: stats._sum.totalAmount || 0,
+    };
+  }
 }
