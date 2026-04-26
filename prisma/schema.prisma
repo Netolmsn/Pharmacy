@@ -16,6 +16,7 @@ model Product {
   category    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
   batches     Batch[]
 }
 
@@ -27,4 +28,24 @@ model Batch {
   productId     String
   product       Product  @relation(fields: [productId], references: [id])
   createdAt     DateTime @default(now())
+
+  saleItems     SaleItem[]
+}
+
+model Sale {
+  id          String     @id @default(uuid())
+  totalAmount Decimal    @db.Decimal(10, 2)
+  createdAt   DateTime   @default(now())
+  
+  items       SaleItem[]
+}
+
+model SaleItem {
+  id        String   @id @default(uuid())
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2) // Preço histórico da venda
+  saleId    String
+  sale      Sale     @relation(fields: [saleId], references: [id])
+  batchId   String
+  batch     Batch    @relation(fields: [batchId], references: [id])
 }
