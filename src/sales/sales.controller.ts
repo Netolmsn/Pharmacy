@@ -1,9 +1,12 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('sales') // Agrupa no Swagger
+@ApiTags('sales')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
