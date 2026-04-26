@@ -12,8 +12,8 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     transform: true,
   }));
-
-  // 2. Configuração do Swagger
+  app.useGlobalFilters(new AllExceptionsFilter());
+  
   const config = new DocumentBuilder()
     .setTitle('Pharmacy Management System')
     .setDescription('API para gestão de medicamentos, estoque e vendas')

@@ -16,7 +16,7 @@ model Product {
   category    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   batches     Batch[]
 }
 
@@ -48,4 +48,14 @@ model SaleItem {
   sale      Sale     @relation(fields: [saleId], references: [id])
   batchId   String
   batch     Batch    @relation(fields: [batchId], references: [id])
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
