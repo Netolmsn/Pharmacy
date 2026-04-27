@@ -42,11 +42,11 @@ model Sale {
 
 model SaleItem {
   id        String   @id @default(uuid())
-  quantity  Int
-  price     Decimal  @db.Decimal(10, 2) // Preço histórico da venda
   saleId    String
-  sale      Sale     @relation(fields: [saleId], references: [id])
   batchId   String
+  quantity  Int
+  soldPrice Decimal  @default(0) @db.Decimal(10, 2) // Certifique-se que o nome é soldPrice
+  sale      Sale     @relation(fields: [saleId], references: [id])
   batch     Batch    @relation(fields: [batchId], references: [id])
 }
 

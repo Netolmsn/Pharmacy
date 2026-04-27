@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -20,10 +20,12 @@ export class ProductsService {
   }
 
   async findOne(id: string) {
-    return this.prisma.product.findUnique({
+    const product = await this.prisma.product.findUnique({
       where: { id },
       include: { batches: true },
     });
+    if (!product) throw new NotFoundException('Produto não encontrado');
+    return product;
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
@@ -36,6 +38,24 @@ export class ProductsService {
   async remove(id: string) {
     return this.prisma.product.delete({
       where: { id },
+    });
+  }
+
+  async getExpiringSoon() {
+    const today = new Date();
+    const alertLimit = new Date();
+    alertLimit.setDate(today.getDate() + 30);
+
+    return this.prisma.batch.findMany({
+      where: {
+        expirationDate: {
+          gte: today,
+          lte: alertLimit,
+        },
+        quantity: { gt: 0 },
+      },
+      include: { product: true },
+      orderBy: { expirationDate: 'asc' },
     });
   }
 }

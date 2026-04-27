@@ -43,4 +43,12 @@ export class ProductsController {
   remove(@Param('id') id: string) {
     return this.productsService.remove(id);
   }
+
+  @Get('dashboard/expiring')
+  @Roles('ADMIN')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Dashboard: Lotes que vencem em até 30 dias' })
+  async getExpiring() {
+  return this.productsService.getExpiringSoon();
+  }
 }

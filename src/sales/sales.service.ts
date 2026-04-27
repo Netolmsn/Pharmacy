@@ -9,7 +9,7 @@ export class SalesService {
   async create(createSaleDto: CreateSaleDto) {
     return this.prisma.$transaction(async (tx) => {
       let totalAmount = 0;
-      const saleItemsData: { batchId: string; quantity: number; price: any }[] = [];
+      const saleItemsData: { quantity: number; soldPrice: any; batch: { connect: { id: string } } }[] = [];
 
       for (const item of createSaleDto.items) {
         const product = await tx.product.findUnique({
@@ -44,9 +44,11 @@ export class SalesService {
           });
 
           saleItemsData.push({
-            batchId: batch.id,
             quantity: amountFromThisBatch,
-            price: product.price,
+            soldPrice: product.price,
+            batch: { 
+              connect: { id: batch.id }
+            }
           });
 
           totalAmount += Number(product.price) * amountFromThisBatch;
