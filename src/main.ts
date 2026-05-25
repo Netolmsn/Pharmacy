@@ -12,8 +12,11 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     transform: true,
   }));
+
   app.useGlobalFilters(new AllExceptionsFilter());
   
+  app.enableCors();
+
   const config = new DocumentBuilder()
     .setTitle('Pharmacy Management System')
     .setDescription('API para gestão de medicamentos, estoque e vendas')
@@ -26,6 +29,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

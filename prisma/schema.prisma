@@ -45,7 +45,7 @@ model SaleItem {
   saleId    String
   batchId   String
   quantity  Int
-  soldPrice Decimal  @default(0) @db.Decimal(10, 2) // Certifique-se que o nome é soldPrice
+  soldPrice Decimal  @default(0) @db.Decimal(10, 2)
   sale      Sale     @relation(fields: [saleId], references: [id])
   batch     Batch    @relation(fields: [batchId], references: [id])
 }
